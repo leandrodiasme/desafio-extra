@@ -32,7 +32,10 @@ inquirer.prompt(actions).then((choice)=>{
         var owner = create.owner;
 
         let novoPet = new Pet(idPet, namePet, breed, owner);
-        console.log(novoPet);
+        
+        fs.writeFile(`${idPet}-${namePet}.json`, JSON.stringify(novoPet), (err)=>{
+          if(err) throw err;
+        })
 
       })
 

@@ -21,7 +21,7 @@ const createPet = [
     {
         type: 'input',
         name: 'breed',
-        message: 'Qual a raça do Pet??'
+        message: 'Qual a raça do Pet?'
     },
     {
         type: 'input',
