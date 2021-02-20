@@ -1,51 +1,81 @@
-const inquirer = require('inquirer');
-const fs = require('fs')
-const {actions, createPet}  = require('./questions');
+const inquirer = require("inquirer");
+const fs = require("fs");
+const { actions, createPet, searchName } = require("./questions");
 
-function Pet(id, nome, raca, nomeDono){
-    this.id = id;
-    this.nome = nome;
-    this.raca = raca;
-    this.nomeDono = nomeDono;
+var arrayPets = [];
+var contador = 0;
+
+function Pet(nome, raca, nomeDono) {
+  
+  let objeto = {};
+
+  objeto.id = contador;
+  objeto.nome = nome;
+  objeto.raca = raca;
+  objeto.nomeDono = nomeDono;
+
+  arrayPets.push(objeto);
+  contador++;
+  return arrayPets;
+
 }
 
+function menu() {
+  inquirer.prompt(actions).then((choice) => {
+    switch (choice.action) {
+      case "Cadastrar novo Pet":
+        cadastrar();
+        break;
 
-let meuPet = new Pet(5, "Tobiass", "basset", "leandro");
+      case "Listar todos os Pets":
+        listar();
+        break;
 
-if(meuPet.nome == "Tobias"){
+      case "Buscar pet por nome":
+        inquirer.prompt(searchName).then((search) => {
+          buscar(search.name);
+        });
+        break;
 
-for (var prop in meuPet) {
-    console.log(prop + " = " + meuPet[prop]);
-  }
-
+      case "Finalizar":
+        break;
+    }
+  });
 }
 
-inquirer.prompt(actions).then((choice)=>{
-  switch(choice.action){
-    case "Cadastrar novo Pet":
+function cadastrar() {
+  console.clear();
+  inquirer.prompt(createPet).then((create) => {
+    Pet(create.name, create.breed, create.owner);
+    fs.writeFileSync(
+      "pets.json",
+      `${JSON.stringify(arrayPets, null, 2)}`,
+      (err) => {
+        if (err) throw err;
+      }
+    );
+    menu();
+  });
+}
 
-      inquirer.prompt(createPet).then((create)=>{
-        
-        const idPet = create.id;
-        var namePet = create.name;
-        var breed = create.breed;
-        var owner = create.owner;
+function listar() {
+  console.clear();
+  arrayPets.forEach((element) => {
+    console.table(element);
+  });
+  menu();
+}
 
-        let novoPet = new Pet(idPet, namePet, breed, owner);
-        
-        fs.writeFile(`${idPet}-${namePet}.json`, JSON.stringify(novoPet), (err)=>{
-          if(err) throw err;
-        })
+function buscar(nomePet) {
+  console.clear();
+  arrayPets.forEach(function (pet){
+    if (pet.nome === nomePet) {
+      for (var dado in pet) {
+        console.log(dado + ": " + pet[dado]);
+      }
+    }
+  });
+  menu();
+}
 
-      })
-
-
-      break;
-    case "Listar todos os Pets":
-      console.log("Ele quer listar todos os pets");
-      break;
-    case "Buscar pet por nome":
-      console.log("Ele quer procurar um pet");
-      break;
-  }
-})
+menu();

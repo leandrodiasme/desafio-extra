@@ -3,16 +3,19 @@ const actions = [
     name: "action",
     type: "list",
     message: "O que você deseja fazer?:",
-    choices: ["Cadastrar novo Pet", "Listar todos os Pets", "Buscar pet por nome"],
+    choices: ["Cadastrar novo Pet", "Listar todos os Pets", "Buscar pet por nome", "Finalizar"],
   },
 ];
 
-const createPet = [
+const searchName = [
     {
-        type: 'number',
-        name: 'id',
-        message: 'Qual será o ID do Pet?'
-    },
+        type: 'input',
+        name: 'name',
+        message: 'Nome do Pet: '
+    },  
+]
+
+const createPet = [
     {
         type: 'input',
         name: 'name',
@@ -30,4 +33,4 @@ const createPet = [
     }
 ];
 
-module.exports = {actions,createPet};
+module.exports = {actions,createPet, searchName};
